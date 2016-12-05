@@ -57,12 +57,12 @@ def index():
   app.logger.debug("Entering index")
   if 'begin_date' not in flask.session:
     init_session_values()
+  flask.g.meetups = getAllMeetUps()
   return render_template('index.html')
 
 @app.route("/make")
 def make():
     app.logger.debug("Entering make")
-    flask.g.meetups = getAllMeetUps()
     return render_template('make.html')
 
 @app.route("/choose")
