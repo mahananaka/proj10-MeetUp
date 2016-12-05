@@ -23,7 +23,7 @@ from apiclient import discovery
 
 # Our own modules
 from agenda import Appt, Agenda
-from meetupdb import addMeetUp, getAllMeetUps
+from meetupdb import addMeetUp, getAllMeetUps, deleteMeetUp
 
 ###
 # Globals
@@ -71,7 +71,7 @@ def delete():
 
     for delete in request.form: #delete each selected, delete variable holds id of db entry
       deleteMeetUp(delete)
-      
+
     return flask.redirect(flask.url_for("index"))
 
 @app.route("/choose")
