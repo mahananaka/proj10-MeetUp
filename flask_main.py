@@ -65,6 +65,15 @@ def make():
     app.logger.debug("Entering make")
     return render_template('make.html')
 
+@app.route("/delete", methods=['POST'])
+def delete():
+    app.logger.debug("Entering delete")
+
+    for delete in request.form: #delete each selected, delete variable holds id of db entry
+      deleteMeetUp(delete)
+      
+    return flask.redirect(flask.url_for("index"))
+
 @app.route("/choose")
 def choose():
     ## We'll need authorization to list calendars 
