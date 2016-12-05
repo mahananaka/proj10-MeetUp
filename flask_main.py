@@ -23,6 +23,7 @@ from apiclient import discovery
 
 # Our own modules
 from agenda import Appt, Agenda
+from meetupdb import addMeetUp, getAllMeetUps
 
 ###
 # Globals
@@ -61,6 +62,7 @@ def index():
 @app.route("/make")
 def make():
     app.logger.debug("Entering make")
+    flask.g.meetups = getAllMeetUps()
     return render_template('make.html')
 
 @app.route("/choose")
@@ -78,6 +80,7 @@ def choose():
     gcal_service = get_gcal_service(credentials)
     app.logger.debug("Returned from get_gcal_service")
     flask.g.calendars = list_calendars(gcal_service)
+    flask.g.meetups = getAllMeetUps()
     return render_template('index.html')
 
 @app.route("/display", methods=['POST'])
@@ -155,19 +158,22 @@ def makemeetup():
     daterange_parts = daterange.split()
 
     #flask.session['daterange'] = daterange
-    flask.session['begin_date'] = interpret_date(daterange_parts[0])
-    flask.session['end_date'] = interpret_date(daterange_parts[2])
-    flask.session['begin_time'] = interpret_time(request.form.get('starttime'),"h:mma")
-    flask.session['end_time'] = interpret_time(request.form.get('endtime'),"h:mma")
+    # flask.session['begin_date'] = interpret_date(daterange_parts[0])
+    # flask.session['end_date'] = interpret_date(daterange_parts[2])
+    # flask.session['begin_time'] = interpret_time(request.form.get('starttime'),"h:mma")
+    # flask.session['end_time'] = interpret_time(request.form.get('endtime'),"h:mma")
 
-    mu_dstart = interpret_date(daterange_parts[0])
-    mu_dend = interpret_date(daterange_parts[2])
-    mu_tstart = interpret_time(request.form.get('starttime'),"h:mma")
-    mu_tend = interpret_time(request.form.get('endtime'),"h:mma")
-    mu_decr = request.form.get('descr')
+    mu_sdate = interpret_date(daterange_parts[0])
+    mu_edate = interpret_date(daterange_parts[2])
+    mu_stime = interpret_time(request.form.get('starttime'),"h:mma")
+    mu_etime = interpret_time(request.form.get('endtime'),"h:mma")
+    mu_descr = request.form.get('descr')
 
-    app.logger.debug("{},{}".format(request.form.get('starttime'),request.form.get('endtime')))
-    app.logger.debug("{},{}".format(flask.session['begin_time'],flask.session['end_time']))
+    collection = getDBCollection()
+    addMeetUp(mu_descr,mu_sdate,mu_edate,mu_stime,mu_etime,collection)
+
+    #app.logger.debug("{},{}".format(request.form.get('starttime'),request.form.get('endtime')))
+    #app.logger.debug("{},{}".format(flask.session['begin_time'],flask.session['end_time']))
 
     app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
       daterange_parts[0], daterange_parts[1], 
