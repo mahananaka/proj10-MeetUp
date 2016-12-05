@@ -70,9 +70,9 @@
     <tbody>
       {% for meetup in g.meetups %}
       <tr>
-        <td><label><input type="checkbox" name="{{ meetup.id }}"></label></td>
+        <td><label><input type="checkbox" name="{{ meetup.meetupid }}"></label></td>
         <td>{{ meetup.descr }}</td>
-        <td><a href='/calendar?muID={{ meetup.id }}'>View</a></td>
+        <td><a href='/calendar?muId={{ meetup.meetupid }}'>View</a></td>
       </tr>
       {% endfor %}
     </tbody>
