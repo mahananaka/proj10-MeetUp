@@ -38,7 +38,7 @@
 <body>
 <div class="container">
 
-<h1 class="text-center">MeetUp Management</h1>
+<h1 class="text-center">MeetUp Management</h1><br>
 
 <!--
   -- If there are any warnings or other messages from a prior action,
@@ -55,7 +55,8 @@
     </ul>
   {% endif %}
 {% endwith %}
-
+<a class="btn btn-primary pull-left" href="#" role="button">Delete</a>
+<a class="btn btn-primary pull-right" href="{{ url_for('make') }}" role="button">Create</a>
 {% if g.meetups is defined  %}
 <div class="container">
   <table class="table">
