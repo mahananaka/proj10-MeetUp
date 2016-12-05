@@ -35,7 +35,7 @@ def getDBCollection():
 
     return None
 
-def addMeetUp(descr,sdate,edate,stime,etime,collection):
+def addMeetUp(descr,sdate,edate,stime,etime):
     rid = str(uuid.uuid4())
     record = { "meetupid": rid,
                "descr": descr,
@@ -45,11 +45,18 @@ def addMeetUp(descr,sdate,edate,stime,etime,collection):
                "etime": sdate,
                "busytime": [] }
 
+    collection = getDBCollection()
     collection.insert(record)
 
-def getMeetUp(id,collection):
+def getMeetUp(id):
     print("not implemented")
     return None
+
+def getAllMeetUps()
+    collection = getDBCollection()
+    records = collection.find()
+    print(records)
+    return records
 
 
 # print("{}".format(MONGO_CLIENT_URL))

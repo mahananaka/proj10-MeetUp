@@ -56,65 +56,28 @@
   {% endif %}
 {% endwith %}
 
-
-  <form class="form-horizontal" action="/setrange" method="post" onsubmit="return validateForm()">
-    <div class="control-group">
-      <div class="controls">
-        <label class="control-label" for="daterange">Date Range</label>
-        <input type="text" name="daterange"
-          {% if session.daterange is defined %}
-               value="{{session.daterange}}"
-          {% endif %}
-          class="pull-down">
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        <label class="control-label" for="starttime">Start Time</label>
-        <input name="starttime" type="text"
-	    {% if session.begin_time is defined %}
-               value={{ session.begin_time|fmttime }}
-	    {% else %}
-	       value="9:00am"
-	    {% endif %}>
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        <label class="control-label" for="endtime">End Time</label>
-        <input name="endtime" type="text"
-	       {% if session.begin_time is defined %}
-	          value={{ session.end_time|fmttime }}
-	       {% else %}
-	          value="5:00pm"
-	       {% endif %}>
-      </div>
-    </div>
-
-  <script type="text/javascript">
-      $(function() {
-        $('input[name*="time"]').timepicker(
-        { 'scrollDefault': 'now', 
-          'orientation': 'br',
-          'step': 15 });
-
-        $('input[name="daterange"]').daterangepicker(
-        {   ranges: {
-               'Today': [moment(), moment()],
-               'Tomorrow':[moment().add(1, 'days'),
-                           moment().add(1, 'days')], 
-               'This week':[moment(), moment().endOf('week')],
-               'Next week':[moment().add(7, 'days').startOf('week'),
-                            moment().add(7, 'days').endOf('week')],
-               'This month':[moment(), moment().endOf('month')],
-               'Within two weeks':[moment(),moment().add(15, 'days')]
-            }}
-         );
-      });
-  </script>
-
-<br /><input type="submit" value="Set date and time range" />
-</form>
+{% if g.meetups is defined  %}
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Select</th>
+        <th>MeetUp Description</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for meetup in g.meetups}
+      <tr>
+        <td><label><input type="checkbox" name="{{ meetup.id }}"></label></td>
+        <td>{{ meetup.descr }}</td>
+        <td><a href='/calendar?muID={{ meetup.id }}'>View</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
 
     <!--
     Show the calendar list (if we have it).  This will need to be turned into
