@@ -142,6 +142,38 @@ def displayFreetimes():
 #
 #####
 
+@app.route('/makemeetup', methods=['POST'])
+def makemeetup():
+    """
+    User chose a date range with the bootstrap daterange
+    widget.
+    """
+    app.logger.debug("Entering makemeetup")  
+    flask.flash("Updated date and time range")
+
+    daterange = request.form.get('daterange')
+    daterange_parts = daterange.split()
+
+    #flask.session['daterange'] = daterange
+    flask.session['begin_date'] = interpret_date(daterange_parts[0])
+    flask.session['end_date'] = interpret_date(daterange_parts[2])
+    flask.session['begin_time'] = interpret_time(request.form.get('starttime'),"h:mma")
+    flask.session['end_time'] = interpret_time(request.form.get('endtime'),"h:mma")
+
+    mu_dstart = interpret_date(daterange_parts[0])
+    mu_dend = interpret_date(daterange_parts[2])
+    mu_tstart = interpret_time(request.form.get('starttime'),"h:mma")
+    mu_tend = interpret_time(request.form.get('endtime'),"h:mma")
+    mu_decr = request.form.get('descr')
+
+    app.logger.debug("{},{}".format(request.form.get('starttime'),request.form.get('endtime')))
+    app.logger.debug("{},{}".format(flask.session['begin_time'],flask.session['end_time']))
+
+    app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
+      daterange_parts[0], daterange_parts[1], 
+      flask.session['begin_date'], flask.session['end_date']))
+    return flask.redirect(flask.url_for("choose"))
+
 @app.route('/setrange', methods=['POST'])
 def setrange():
     """

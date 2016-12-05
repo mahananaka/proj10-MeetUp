@@ -57,7 +57,7 @@
 {% endwith %}
 
 
-  <form class="form-horizontal" action="/setrange" method="post" onsubmit="return validateForm()">
+  <form class="form-horizontal" action="/makemeetup" method="post" onsubmit="return validateForm()">
     <div class="control-group">
       <div class="controls">
         <label class="control-label" for="daterange">Date Range</label>
@@ -90,7 +90,12 @@
 	       {% endif %}>
       </div>
     </div>
-
+    <div class="control-group">
+      <div class="controls">
+        <label class="control-label" for="endtime">Description</label>
+        <input name="descr" type="text" value="MeetUp">
+      </div>
+    </div>
   <script type="text/javascript">
       $(function() {
         $('input[name*="time"]').timepicker(
@@ -113,7 +118,7 @@
       });
   </script>
 
-<br /><input type="submit" value="Set date and time range" />
+<br /><input type="submit" value="Create MeetUp" />
 </form>
 
     <!--
@@ -133,6 +138,9 @@
         valid = false;
     });
 
+    if($('input[name="descr"]').val() == "")
+      valid = false;
+    
     return valid;
   }
 </script>
