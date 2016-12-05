@@ -55,8 +55,8 @@
     </ul>
   {% endif %}
 {% endwith %}
-<a class="btn btn-primary pull-left" href="#" role="button">Delete</a>
-<a class="btn btn-primary pull-right" href="{{ url_for('make') }}" role="button">Create</a>
+<div class="pull-left"><a class="btn btn-primary" href="#" role="button">Delete</a></div>
+<div class="pull-right"><a class="btn btn-primary" href="{{ url_for('make') }}" role="button">Create</a></div>
 {% if g.meetups is defined  %}
 <div class="container">
   <table class="table">
