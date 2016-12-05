@@ -67,7 +67,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for meetup in g.meetups}
+      {% for meetup in g.meetups %}
       <tr>
         <td><label><input type="checkbox" name="{{ meetup.id }}"></label></td>
         <td>{{ meetup.descr }}</td>
