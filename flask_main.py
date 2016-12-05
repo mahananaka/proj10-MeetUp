@@ -169,8 +169,7 @@ def makemeetup():
     mu_etime = interpret_time(request.form.get('endtime'),"h:mma")
     mu_descr = request.form.get('descr')
 
-    collection = getDBCollection()
-    addMeetUp(mu_descr,mu_sdate,mu_edate,mu_stime,mu_etime,collection)
+    addMeetUp(mu_descr,mu_sdate,mu_edate,mu_stime,mu_etime)
 
     #app.logger.debug("{},{}".format(request.form.get('starttime'),request.form.get('endtime')))
     #app.logger.debug("{},{}".format(flask.session['begin_time'],flask.session['end_time']))
