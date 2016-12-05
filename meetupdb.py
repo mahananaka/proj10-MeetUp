@@ -50,13 +50,18 @@ def addMeetUp(descr,sdate,edate,stime,etime):
 
 def getMeetUp(id):
     print("not implemented")
-    return None
+    return
 
 def getAllMeetUps():
     collection = getDBCollection()
     records = collection.find()
-    print(records)
     return records
+
+def deleteMeetUp(id):
+    record = { "meetupid": id }
+    collection = getDBCollection()
+    collection.remove(record)
+    return
 
 
 # print("{}".format(MONGO_CLIENT_URL))
