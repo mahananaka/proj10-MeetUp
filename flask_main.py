@@ -58,6 +58,11 @@ def index():
     init_session_values()
   return render_template('index.html')
 
+@app.route("/make")
+def make():
+    app.logger.debug("Entering make")
+    return render_template('make.html')
+
 @app.route("/choose")
 def choose():
     ## We'll need authorization to list calendars 

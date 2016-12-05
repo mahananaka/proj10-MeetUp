@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html lang="en"> <head>
+<title>Appointments</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" type="text/css"
+     href="//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css"
+/>
+
+
+<link rel="stylesheet" type="text/css"
+    href="/static/css/busy.css"
+/>
+
+<!-- jquery from a content distribution network; probably cached -->
+<script type="text/javascript"
+     src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js">
+</script>
+
+<!-- Ideally the rest of our javascript dependencies would be
+     bundled and minified with 'browserify', but I've found that
+     it difficult to handle browserify dependencies for class
+     projects.  So, we'll pick up moment and a date range picker
+     from CDNs instead.
+-->
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min.css" />
+
+
+</head>
+
+<body>
+<div class="container">
+
+<h1>Busy times</h1>
+
+<!--
+  -- If there are any warnings or other messages from a prior action,
+  -- they appear above the rest of the content, just until the next 
+  -- action.
+  -->
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+
+  <form class="form-horizontal" action="/setrange" method="post" onsubmit="return validateForm()">
+    <div class="control-group">
+      <div class="controls">
+        <label class="control-label" for="daterange">Date Range</label>
+        <input type="text" name="daterange"
+          {% if session.daterange is defined %}
+               value="{{session.daterange}}"
+          {% endif %}
+          class="pull-down">
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <label class="control-label" for="starttime">Start Time</label>
+        <input name="starttime" type="text"
+	    {% if session.begin_time is defined %}
+               value={{ session.begin_time|fmttime }}
+	    {% else %}
+	       value="9:00am"
+	    {% endif %}>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <label class="control-label" for="endtime">End Time</label>
+        <input name="endtime" type="text"
+	       {% if session.begin_time is defined %}
+	          value={{ session.end_time|fmttime }}
+	       {% else %}
+	          value="5:00pm"
+	       {% endif %}>
+      </div>
+    </div>
+
+  <script type="text/javascript">
+      $(function() {
+        $('input[name*="time"]').timepicker(
+        { 'scrollDefault': 'now', 
+          'orientation': 'br',
+          'step': 15 });
+
+        $('input[name="daterange"]').daterangepicker(
+        {   ranges: {
+               'Today': [moment(), moment()],
+               'Tomorrow':[moment().add(1, 'days'),
+                           moment().add(1, 'days')], 
+               'This week':[moment(), moment().endOf('week')],
+               'Next week':[moment().add(7, 'days').startOf('week'),
+                            moment().add(7, 'days').endOf('week')],
+               'This month':[moment(), moment().endOf('month')],
+               'Within two weeks':[moment(),moment().add(15, 'days')]
+            }}
+         );
+      });
+  </script>
+
+<br /><input type="submit" value="Set date and time range" />
+</form>
+
+    <!--
+    Show the calendar list (if we have it).  This will need to be turned into
+    a form from which calendars can be picked. Up to three entries are
+    shown in each row (but the order is across then down; I would
+    prefer down then across). 
+    -->
+<br>
+<script type="text/javascript">
+  function validateForm(){
+    var controls = $('input[name*="time"]');
+    var valid = true;
+
+    controls.each(function(){
+      if($(this).val() == "")
+        valid = false;
+    });
+
+    return valid;
+  }
+</script>
+{% endif %}
+
+  </div>  <!-- container (for bootstrap) -->
+  </body> </html>
