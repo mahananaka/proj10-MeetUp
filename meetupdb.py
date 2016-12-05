@@ -52,7 +52,7 @@ def getMeetUp(id):
     print("not implemented")
     return None
 
-def getAllMeetUps()
+def getAllMeetUps():
     collection = getDBCollection()
     records = collection.find()
     print(records)
