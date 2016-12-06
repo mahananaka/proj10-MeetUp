@@ -40,9 +40,9 @@ def addMeetUp(descr,sdate,edate,stime,etime):
     record = { "meetupid": rid,
                "descr": descr,
                "sdate": sdate,
-               "edate": sdate,
-               "stime": sdate,
-               "etime": sdate,
+               "edate": edate,
+               "stime": stime,
+               "etime": etime,
                "busytime": [] }
 
     collection = getDBCollection()
