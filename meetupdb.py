@@ -75,7 +75,7 @@ def addBusyTimes(meetupID, busytimes):
     value = {"busytime":busytimes}
     collection = getDBCollection()
     collection.update(key, value)
-    collection.update(key, {$inc: { "count":1 }})
+    collection.update(key, { '$inc':{ "count":1 }})
 
 
 # print("{}".format(MONGO_CLIENT_URL))
