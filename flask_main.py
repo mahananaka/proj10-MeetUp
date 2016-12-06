@@ -136,6 +136,9 @@ def addBusyTimes():
       return redirect(url_for('index'))
 
     newTimes = flask.session['events']
+
+    print(newTimes)
+
     for delkey in request.form:
       newTimes[:] = [d for d in newTimes if d.get('id') != delkey]
 
@@ -153,11 +156,8 @@ def addBusyTimes():
     # flask.session['free'] = sessionify(schedule['free'])
     # flask.session['busy'] = sessionify(schedule['busy'])
 
-    updateBusyTimes(flask.session['meetupId'], sessionify(busytimes))
-    # for day in schedule['free']:
-    #   for appt in day.appts:
-    #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
-
+    ####updateBusyTimes(flask.session['meetupId'], sessionify(busytimes))
+    
     return flask.redirect(flask.url_for('displayFreetimes', muID=flask.session['meetupId']))
 
 @app.route("/freetime/<muID>")
