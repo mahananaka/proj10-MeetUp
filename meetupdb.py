@@ -70,7 +70,7 @@ def deleteMeetUp(meetupID):
     collection.remove(key)
     return
 
-def addBusyTimes(meetupID, busytimes):
+def updateBusyTimes(meetupID, busytimes):
     key = {"meetupid":meetupID}
     value = {"busytime":busytimes}
     collection = getDBCollection()

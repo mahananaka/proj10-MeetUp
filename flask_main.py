@@ -23,7 +23,7 @@ from apiclient import discovery
 
 # Our own modules
 from agenda import Appt, Agenda
-from meetupdb import addMeetUp, getAllMeetUps, deleteMeetUp, getMeetUp, addBusyTimes
+from meetupdb import addMeetUp, getAllMeetUps, deleteMeetUp, getMeetUp, updateBusyTimes
 
 ###
 # Globals
@@ -150,14 +150,14 @@ def addBusyTimes():
     flask.session['busy'] = sessionify(schedule['busy'])
 
     app.logger.debug(flask.session['busy'])
-    addBusyTimes(flask.session['meetupId'], flask.session['busy'])
+    updateBusyTimes(flask.session['meetupId'], flask.session['busy'])
     # for day in schedule['free']:
     #   for appt in day.appts:
     #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
 
-    return render_template('freetimes.html')
+    return return flask.redirect(flask.url_for('displayFreetimes'))
 
-@app.route("/freetime", methods=['POST'])
+@app.route("/freetime")
 def displayFreetimes():
     app.logger.debug("Entering displayFreetimes")
     if 'events' not in flask.session:
@@ -184,6 +184,7 @@ def displayFreetimes():
     #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
 
     return render_template('freetimes.html')
+
 #####
 #
 #  Option setting:  Buttons or forms that add some
