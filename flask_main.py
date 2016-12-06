@@ -496,6 +496,10 @@ def get_free_times(busytimes, dStart, dEnd, tStart, tEnd):
       timeframe = Appt.from_iso_date(time_begin,time_end,"Free Time")
       freetimes.append(busytimes_today.complement(timeframe))
 
+      #advance the day to sync with the next iteration
+      time_begin = next_day(time_begin)
+      time_end = next_day(time_end)
+
     return freetimes
 
 def sessionify(agenda):
