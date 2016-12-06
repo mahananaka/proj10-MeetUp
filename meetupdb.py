@@ -48,17 +48,19 @@ def addMeetUp(descr,sdate,edate,stime,etime):
     collection = getDBCollection()
     collection.insert(record)
 
-def getMeetUp(id):
-    print("not implemented")
-    return
+def getMeetUp(meetupID):
+    collection = getDBCollection()
+    print(meetupID)
+    record = collection.find( { "meetupid": meetupID } )
+    return record
 
 def getAllMeetUps():
     collection = getDBCollection()
     records = collection.find()
     return records
 
-def deleteMeetUp(id):
-    record = { "meetupid": id }
+def deleteMeetUp(meetupID):
+    record = { "meetupid": meetupID }
     collection = getDBCollection()
     collection.remove(record)
     return
