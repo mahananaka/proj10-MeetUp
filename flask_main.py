@@ -139,8 +139,8 @@ def addBusyTimes():
     for delkey in request.form:
       newTimes[:] = [d for d in newTimes if d.get('id') != delkey]
 
-    existingTimes = getMeetUp(flask.session['meetupId'])
-    busytimes = mergeBusyTimes(newTimes, existingTimes, flask.session['begin_date'], flask.session['end_date'])
+    record = getMeetUp(flask.session['meetupId'])
+    busytimes = mergeBusyTimes(newTimes, record['busytime'], flask.session['begin_date'], flask.session['end_date'])
 
 
     # schedule = get_busy_free_times(flask.session['events'],
