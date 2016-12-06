@@ -74,7 +74,8 @@
       <tr>
         <th>Select</th>
         <th>MeetUp Description</th>
-        <th>Link</th>
+        <th>Add Schedule</th>
+        <th>Free Times</th>
       </tr>
     </thead>
     <tbody>
@@ -83,6 +84,7 @@
         <td><label><input type="checkbox" name="{{ meetup.meetupid }}"></label></td>
         <td>{{ meetup.descr }}</td>
         <td><a href='/getCalendars?muId={{ meetup.meetupid }}'>View</a></td>
+        <td><a href='/freeTime?muId={{ meetup.meetupid }}'>View</a></td>
       </tr>
       {% endfor %}
     </tbody>

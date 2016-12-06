@@ -128,6 +128,35 @@ def displayEvents():
 
     return render_template('busytimes.html')
 
+@app.route("/addBusyTime", methods=['POST'])
+def addBusyTimes():
+    app.logger.debug("Entering addBusyTimes")
+    if 'events' not in flask.session:
+      app.logger.debug("Events not in session redirecting")
+      return redirect(url_for('index'))
+
+    events = flask.session['events']
+    for delkey in request.form:
+      events[:] = [d for d in events if d.get('id') != delkey]
+
+    schedule = get_busy_free_times(flask.session['events'],
+                                     flask.session['begin_date'],
+                                     flask.session['end_date'], 
+                                     flask.session['begin_time'],
+                                     flask.session['end_time'])
+
+    #store in session, must be processed so it can go into session
+    flask.session['free'] = sessionify(schedule['free'])
+    flask.session['busy'] = sessionify(schedule['busy'])
+
+    app.logger.debug(flask.session['busy'])
+
+    # for day in schedule['free']:
+    #   for appt in day.appts:
+    #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
+
+    return render_template('freetimes.html')
+
 @app.route("/freetime", methods=['POST'])
 def displayFreetimes():
     app.logger.debug("Entering displayFreetimes")
