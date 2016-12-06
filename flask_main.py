@@ -402,19 +402,24 @@ def format_events(events):
     app.logger.debug("Entering format_events")
     result = [ ]
     for e in events:
+        print(e["summary"])
         if("date" in e["start"]):
+          print("if tree")
           start = interpret_date(e["start"]["date"],"YYYY-MM-DD")
           end = interpret_date(e["end"]["date"],"YYYY-MM-DD")
         else:
+          print("else brance")
           start = e["start"]["dateTime"]
           end = e["end"]["dateTime"]
+
+
 
         if("transparency" in e):
           show = False
         else:
           show = True
 
-        print(e["summary"])
+
         if(show and in_time_frame(start,end,flask.session['begin_time'],flask.session['end_time'])):
           result.append(
             { "kind": e["kind"],
