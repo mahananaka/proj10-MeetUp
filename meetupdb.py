@@ -53,7 +53,7 @@ def getMeetUp(meetupID):
     print(meetupID)
     records = collection.find({"meetupid":meetupID})
 
-    if len(records) > 0:
+    if records.count > 0:
       return records[0] #just the first result
     else:
       return None
