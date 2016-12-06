@@ -52,7 +52,11 @@ def getMeetUp(meetupID):
     collection = getDBCollection()
     print(meetupID)
     records = collection.find({"meetupid":meetupID})
-    return records[0] #just the first result
+
+    if len(records) > 0:
+      return records[0] #just the first result
+    else:
+      return None
 
 def getAllMeetUps():
     collection = getDBCollection()

@@ -81,9 +81,7 @@ def getCalendars():
     ## to pull it back here because the redirect has to be a
     ## 'return' 
     
-    if 'meetupId' not in flask.session:
-      flask.session['meetupId'] = request.args.get('muId','')
-
+    flask.session['meetupId'] = request.args.get('muId','')
     if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
 
