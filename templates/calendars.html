@@ -63,7 +63,7 @@
     -->
 <br>
 {% if g.calendars is defined  %}
-<form action="{{ url_for('displayEvents') }}" method="post">
+<form action="{{ url_for('displayEvents') }}" onsubmit="return Validate();" method="post">
   <div class="row">
   {% for cal in g.calendars if cal.selected %}
       <div class="col-md-4">
