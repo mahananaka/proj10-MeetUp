@@ -154,7 +154,7 @@ def addBusyTimes():
     #   for appt in day.appts:
     #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
 
-    return flask.redirect(flask.url_for('displayFreetimes'))
+    return flask.redirect(flask.url_for('displayFreetimes', muID=flask.session['meetupId']))
 
 @app.route("/freetime/<muID>")
 def displayFreetimes(muID):
