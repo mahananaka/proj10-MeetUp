@@ -497,6 +497,8 @@ def mergeBusyTimes(newTimes, oldTimes, dStart, dEnd):
           busytimes_today.append(Appt.from_iso_date(appt['start'],appt['end'],appt['descr']))
           i=i+1
 
+      print(len(oldTimes))
+      print(j)
       if(len(oldTimes) > j):
         for appt in oldTimes[j]:
           busytimes_today.append(Appt.from_iso_date(appt['start'],appt['end'],appt['descr']))
