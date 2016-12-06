@@ -88,6 +88,7 @@ def getCalendars():
       return flask.redirect(flask.url_for("index"))
 
     record = getMeetUp(flask.session['meetupId'])
+    print(record)
     flask.session['begin_date'] = record.sdate
     flask.session['end_date'] = record.edate
     flask.session['begin_time'] = record.stime
