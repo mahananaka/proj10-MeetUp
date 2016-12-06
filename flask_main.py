@@ -165,7 +165,7 @@ def displayFreetimes(muID):
 
     record = getMeetUp(flask.session['meetupId'])
     busytimes = record['busytime']
-    freetimes = get_free_times(record['sdate'],record['edate'],record['stime'],record['etime'])
+    freetimes = get_free_times(busytimes, record['sdate'], record['edate'], record['stime'], record['etime'])
 
     flask.session['free'] = sessionify(freetimes)
     flask.session['busy'] = busytimes
