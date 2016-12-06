@@ -87,8 +87,9 @@ def getCalendars():
     if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
 
+    app.logger.debug(flask.session['meetupId'])
     record = getMeetUp(flask.session['meetupId'])
-    print(record)
+    app.logger.debug(record)
     flask.session['begin_date'] = record.sdate
     flask.session['end_date'] = record.edate
     flask.session['begin_time'] = record.stime
