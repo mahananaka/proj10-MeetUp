@@ -163,19 +163,26 @@ def displayFreetimes(muID):
       app.logger.debug("Events not in session redirecting")
       return redirect(url_for('index'))
 
-    events = flask.session['events']
-    for delkey in request.form:
-      events[:] = [d for d in events if d.get('id') != delkey]
-    
-    schedule = get_busy_free_times(flask.session['events'],
-                                    flask.session['begin_date'],
-                                    flask.session['end_date'], 
-                                    flask.session['begin_time'],
-                                    flask.session['end_time'])
+    record = getMeetUp(flask.session['meetupId'])
+    busytimes = record['busytime']
+    freetimes = get_free_times(record['sdate'],record['edate'],record['stime'],record['etime'])
 
-    #store in session, must be processed so it can go into session
-    flask.session['free'] = sessionify(schedule['free'])
-    flask.session['busy'] = sessionify(schedule['busy'])
+    flask.session['free'] = sessionify(freetimes)
+    flask.session['busy'] = busytimes
+
+    # events = flask.session['events']
+    # for delkey in request.form:
+    #   events[:] = [d for d in events if d.get('id') != delkey]
+    
+    # schedule = get_busy_free_times(flask.session['events'],
+    #                                 flask.session['begin_date'],
+    #                                 flask.session['end_date'], 
+    #                                 flask.session['begin_time'],
+    #                                 flask.session['end_time'])
+
+    # #store in session, must be processed so it can go into session
+    # flask.session['free'] = sessionify(schedule['free'])
+    # flask.session['busy'] = sessionify(schedule['busy'])
 
 
     # for day in schedule['free']:
@@ -443,7 +450,6 @@ def get_busy_free_times(events, dStart, dEnd, tStart, tEnd):
     busytimes = []
     freetimes = []
     
-    count = len(events)
     begin = arrow.get(dStart)
     end = arrow.get(dEnd)
     time_begin = combine_date_time(begin, arrow.get(tStart))
@@ -471,6 +477,26 @@ def get_busy_free_times(events, dStart, dEnd, tStart, tEnd):
 
     #return this as a dict of the free and busy times
     return {"busy":busytimes, "free":freetimes}
+
+def get_free_times(busytimes, dStart, dEnd, tStart, tEnd):
+    freetimes = []
+
+    begin = arrow.get(dStart)
+    end = arrow.get(dEnd)
+    time_begin = combine_date_time(begin, arrow.get(tStart))
+    time_end = combine_date_time(begin, arrow.get(tEnd))
+    i = 0
+
+    for day in busytimes
+      busytimes_today = Agenda()
+
+      for item in day:
+        busytimes_today.append(Appt.from_iso_date(item['start'],item['end'],item['descr']))
+
+      timeframe = Appt.from_iso_date(time_begin,time_end,"Free Time")
+      freetimes.append(busytimes_today.complement(timeframe))
+
+    return freetimes
 
 def sessionify(agenda):
     schedule = []
