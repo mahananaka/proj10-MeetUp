@@ -153,7 +153,7 @@ def addBusyTimes():
     # flask.session['free'] = sessionify(schedule['free'])
     # flask.session['busy'] = sessionify(schedule['busy'])
 
-    updateBusyTimes(flask.session['meetupId'], busytimes)
+    updateBusyTimes(flask.session['meetupId'], sessionify(busytimes))
     # for day in schedule['free']:
     #   for appt in day.appts:
     #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
