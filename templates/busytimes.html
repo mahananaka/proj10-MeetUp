@@ -35,7 +35,7 @@
 <body>
 <div class="container">
 
-<h1>Busy times</h1>
+<h1>Your calendar itinerary</h1>
 
 <!--
   -- If there are any warnings or other messages from a prior action,
@@ -58,7 +58,7 @@
     shown in each row (but the order is across then down; I would
     prefer down then across). 
     -->
-<div>Uncheck any busy time bloew that be ignored.</div>
+<div>Uncheck any items below, that you wish to be considered free times.</div><br>
 <form action="{{ url_for('displayFreetimes') }}" onsubmit="return Validate();" method="post">
 {% if session.events is defined  %}
   <div class="row">
