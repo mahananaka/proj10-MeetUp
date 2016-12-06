@@ -74,12 +74,16 @@ def delete():
 
     return flask.redirect(flask.url_for("index"))
 
-@app.route("/choose")
-def choose():
+@app.route("/getCalendars")
+def getCalendars():
     ## We'll need authorization to list calendars 
     ## I wanted to put what follows into a function, but had
     ## to pull it back here because the redirect has to be a
     ## 'return' 
+    flask.session['meetupId'] = request.args.get('muId','')
+    if flask.session['meetupId'] = '':
+      return flask.redirect(flask.url_for("index"))
+
     app.logger.debug("Checking credentials for Google calendar access")
     credentials = valid_credentials()
     if not credentials:
@@ -89,8 +93,7 @@ def choose():
     gcal_service = get_gcal_service(credentials)
     app.logger.debug("Returned from get_gcal_service")
     flask.g.calendars = list_calendars(gcal_service)
-    flask.g.meetups = getAllMeetUps()
-    return render_template('index.html')
+    return render_template('calendars.html')
 
 @app.route("/display", methods=['POST'])
 def displayEvents():
@@ -179,31 +182,31 @@ def makemeetup():
       flask.session['begin_date'], flask.session['end_date']))
     return flask.redirect(flask.url_for("index"))
 
-@app.route('/setrange', methods=['POST'])
-def setrange():
-    """
-    User chose a date range with the bootstrap daterange
-    widget.
-    """
-    app.logger.debug("Entering setrange")  
-    flask.flash("Updated date and time range")
+# @app.route('/setrange', methods=['POST'])
+# def setrange():
+#     """
+#     User chose a date range with the bootstrap daterange
+#     widget.
+#     """
+#     app.logger.debug("Entering setrange")  
+#     flask.flash("Updated date and time range")
 
-    daterange = request.form.get('daterange')
-    daterange_parts = daterange.split()
+#     daterange = request.form.get('daterange')
+#     daterange_parts = daterange.split()
 
-    flask.session['daterange'] = daterange
-    flask.session['begin_date'] = interpret_date(daterange_parts[0])
-    flask.session['end_date'] = interpret_date(daterange_parts[2])
-    flask.session['begin_time'] = interpret_time(request.form.get('starttime'),"h:mma")
-    flask.session['end_time'] = interpret_time(request.form.get('endtime'),"h:mma")
+#     flask.session['daterange'] = daterange
+#     flask.session['begin_date'] = interpret_date(daterange_parts[0])
+#     flask.session['end_date'] = interpret_date(daterange_parts[2])
+#     flask.session['begin_time'] = interpret_time(request.form.get('starttime'),"h:mma")
+#     flask.session['end_time'] = interpret_time(request.form.get('endtime'),"h:mma")
 
-    app.logger.debug("{},{}".format(request.form.get('starttime'),request.form.get('endtime')))
-    app.logger.debug("{},{}".format(flask.session['begin_time'],flask.session['end_time']))
+#     app.logger.debug("{},{}".format(request.form.get('starttime'),request.form.get('endtime')))
+#     app.logger.debug("{},{}".format(flask.session['begin_time'],flask.session['end_time']))
 
-    app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
-      daterange_parts[0], daterange_parts[1], 
-      flask.session['begin_date'], flask.session['end_date']))
-    return flask.redirect(flask.url_for("choose"))
+#     app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
+#       daterange_parts[0], daterange_parts[1], 
+#       flask.session['begin_date'], flask.session['end_date']))
+#     return flask.redirect(flask.url_for("choose"))
 
 ####
 #
