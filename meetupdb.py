@@ -50,9 +50,9 @@ def addMeetUp(descr,sdate,edate,stime,etime):
     collection.insert(record)
 
 def getMeetUp(meetupID):
+    key = {"meetupid":meetupID}
     collection = getDBCollection()
-    print(meetupID)
-    records = collection.find({"meetupid":meetupID})
+    records = collection.find(key)
 
     if records.count() > 0:
       return records[0] #just the first result
@@ -65,10 +65,17 @@ def getAllMeetUps():
     return records
 
 def deleteMeetUp(meetupID):
-    record = { "meetupid": meetupID }
+    key = { "meetupid": meetupID }
     collection = getDBCollection()
-    collection.remove(record)
+    collection.remove(key)
     return
+
+def addBusyTimes(meetupID, busytimes):
+    key = {"meetupid":meetupID}
+    value = {"busytime":busytimes}
+    collection = getDBCollection()
+    collection.update(key, value)
+    collection.update(key, {$inc: { "count":1 }})
 
 
 # print("{}".format(MONGO_CLIENT_URL))

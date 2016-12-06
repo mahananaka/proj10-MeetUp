@@ -23,7 +23,7 @@ from apiclient import discovery
 
 # Our own modules
 from agenda import Appt, Agenda
-from meetupdb import addMeetUp, getAllMeetUps, deleteMeetUp, getMeetUp
+from meetupdb import addMeetUp, getAllMeetUps, deleteMeetUp, getMeetUp, addBusyTimes
 
 ###
 # Globals
@@ -150,7 +150,7 @@ def addBusyTimes():
     flask.session['busy'] = sessionify(schedule['busy'])
 
     app.logger.debug(flask.session['busy'])
-
+    addBusyTimes(flask.session['meetupId'], flask.session['busy'])
     # for day in schedule['free']:
     #   for appt in day.appts:
     #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
@@ -455,7 +455,7 @@ def get_busy_free_times(events, dStart, dEnd, tStart, tEnd):
       
       for e in events[i:]:
         if same_date(day.isoformat(), e['start']):
-          busytimes_today.append(Appt.from_iso_date(e['start'],e['end'],e['summary']))
+          busytimes_today.append(Appt.from_iso_date(e['start'],e['end'],'Busy')) #using 'Busy' because we don't want private info any further
           i = i+1
 
       #we have all busy times for a single day now
