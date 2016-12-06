@@ -402,9 +402,8 @@ def format_events(events):
     app.logger.debug("Entering format_events")
     result = [ ]
     for e in events:
-        print(e["summary"])
         if("date" in e["start"]):
-          print("if tree")
+          print("{} , {}".format(e["start"]["date"],e["end"]["date"]))
           start = interpret_date(e["start"]["date"],"YYYY-MM-DD")
           end = interpret_date(e["end"]["date"],"YYYY-MM-DD")
         else:
