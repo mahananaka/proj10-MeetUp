@@ -74,7 +74,7 @@ def updateBusyTimes(meetupID, busytimes):
     key = {"meetupid":meetupID}
     value = {"busytime":busytimes}
     collection = getDBCollection()
-    collection.update(key, value)
+    collection.update(key, { '$set': value })
     collection.update(key, { '$inc':{ "count":1 }})
 
 
