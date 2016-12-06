@@ -135,21 +135,25 @@ def addBusyTimes():
       app.logger.debug("Events not in session redirecting")
       return redirect(url_for('index'))
 
-    events = flask.session['events']
+    newTimes = flask.session['events']
     for delkey in request.form:
-      events[:] = [d for d in events if d.get('id') != delkey]
+      newTimes[:] = [d for d in newTimes if d.get('id') != delkey]
 
-    schedule = get_busy_free_times(flask.session['events'],
-                                     flask.session['begin_date'],
-                                     flask.session['end_date'], 
-                                     flask.session['begin_time'],
-                                     flask.session['end_time'])
+    existingTimes = getMeetUp(flask.session['meetupId'])
+    busytimes = mergeBusyTimes(newTimes, existingTimes, flask.session['begin_date'], flask.session['end_date'])
 
-    #store in session, must be processed so it can go into session
-    flask.session['free'] = sessionify(schedule['free'])
-    flask.session['busy'] = sessionify(schedule['busy'])
 
-    updateBusyTimes(flask.session['meetupId'], flask.session['busy'])
+    # schedule = get_busy_free_times(flask.session['events'],
+    #                                  flask.session['begin_date'],
+    #                                  flask.session['end_date'], 
+    #                                  flask.session['begin_time'],
+    #                                  flask.session['end_time'])
+
+    # #store in session, must be processed so it can go into session
+    # flask.session['free'] = sessionify(schedule['free'])
+    # flask.session['busy'] = sessionify(schedule['busy'])
+
+    updateBusyTimes(flask.session['meetupId'], busytimes)
     # for day in schedule['free']:
     #   for appt in day.appts:
     #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
@@ -477,6 +481,31 @@ def get_busy_free_times(events, dStart, dEnd, tStart, tEnd):
 
     #return this as a dict of the free and busy times
     return {"busy":busytimes, "free":freetimes}
+
+def mergeBusyTimes(newTimes, oldTimes, dStart, dEnd):
+    busytimes = []
+    begin = arrow.get(dStart)
+    end = arrow.get(dEnd)
+    i = 0
+    j = 0
+
+    for day in arrow.Arrow.range('day',begin,end):
+      busytimes_today = Agenda()
+
+      for appt in newTimes[i:]:
+        if same_date(day.isoformat(), appt['start']):
+          busytimes_today.append(Appt.from_iso_date(appt['start'],appt['end'],appt['descr']))
+          i=i+1
+
+      if(len(oldTimes) > j):
+        for appt in oldTimes[j]:
+          busytimes_today.append(Appt.from_iso_date(appt['start'],appt['end'],appt['descr']))
+
+      busytimes.append(busytimes_today)
+      j=j+1
+
+    return busytimes
+
 
 def get_free_times(busytimes, dStart, dEnd, tStart, tEnd):
     freetimes = []
