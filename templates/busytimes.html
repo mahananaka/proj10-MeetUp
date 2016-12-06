@@ -59,7 +59,7 @@
     prefer down then across). 
     -->
 <div>Uncheck any items below, that you wish to be considered free times.</div><br>
-<form action="{{ url_for('displayFreetimes') }}" onsubmit="return Validate();" method="post">
+<form action="{{ url_for('addBusyTimes') }}" onsubmit="return Validate();" method="post">
 {% if session.events is defined  %}
   <div class="row">
     <div class="col-md-4">
