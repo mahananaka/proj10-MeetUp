@@ -609,7 +609,7 @@ def oauth2callback():
     ## but for the moment I'll just log it and go back to
     ## the main screen
     app.logger.debug("Got credentials")
-    return flask.redirect(flask.url_for('getCalendars'))
+    return flask.redirect(flask.url_for('getCalendars',muID=flask.session['meetupId']))
 
 
 #################
