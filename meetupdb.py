@@ -51,8 +51,8 @@ def addMeetUp(descr,sdate,edate,stime,etime):
 def getMeetUp(meetupID):
     collection = getDBCollection()
     print(meetupID)
-    record = collection.findOne({"meetupid":meetupID})
-    return record
+    records = collection.find({"meetupid":meetupID})
+    return records[0] #just the first result
 
 def getAllMeetUps():
     collection = getDBCollection()
