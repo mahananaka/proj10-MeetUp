@@ -74,7 +74,7 @@
                   {% if freetimes|length > 0 %}
                   {{ freetimes[0].start|fmtdate }}
                   {% else %}
-                  {{ busytimes.start|fmtdate }}
+                  {{ busytimes[0].start|fmtdate }}
                   {% endif %}
                 </u>
               </strong>
@@ -85,7 +85,6 @@
           <div class="col-md-6">
             <ul class="list-unstyled">
             <li><strong>Free Times</strong></li>
-            
             {% for item in freetimes %}
               <li>
                 <label>
