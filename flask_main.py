@@ -329,6 +329,19 @@ def interpret_date( text, fmt="MM/DD/YYYY" ):
         raise
     return as_arrow.isoformat()
 
+def end_of_day( txt, fmt="MM/DD/YYYY"):
+    """
+    Convert text of date to ISO format used internally,
+    with time set to end of day and the local time zone.
+    """
+    try:
+      as_arrow = arrow.get(text, fmt)
+      as_arrow = as_arrow.replace(tzinfo=tz.tzlocal(),hours=23,minutes=59,seconds=59)
+    except:
+        flask.flash("Date '{}' didn't fit expected format 12/31/2001")
+        raise
+    return as_arrow.isoformat()
+
 ####
 #
 #  Functions (NOT pages) that return some information
@@ -404,9 +417,8 @@ def format_events(events):
     for e in events:
         if("date" in e["start"]):
           start = interpret_date(e["start"]["date"],"YYYY-MM-DD")
-          end = interpret_date(e["end"]["date"],"YYYY-MM-DD")
+          end = end_of_day(e["start"]["date"],"YYYY-MM-DD")
         else:
-          print("else brance")
           start = e["start"]["dateTime"]
           end = e["end"]["dateTime"]
 
@@ -415,6 +427,7 @@ def format_events(events):
         else:
           show = True
 
+        print(e["summary"])
         if(in_time_frame(start,end,flask.session['begin_time'],flask.session['end_time'])):
           result.append(
             { "kind": e["kind"],
