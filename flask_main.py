@@ -155,7 +155,7 @@ def addBusyTimes():
     #   for appt in day.appts:
     #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
 
-    return return flask.redirect(flask.url_for('displayFreetimes'))
+    return flask.redirect(flask.url_for('displayFreetimes'))
 
 @app.route("/freetime")
 def displayFreetimes():
