@@ -174,6 +174,9 @@ def displayFreetimes(muID):
     flask.session['free'] = sessionify(freetimes)
     flask.session['busy'] = busytimes
 
+    print(flask.session['free'])
+    print(flask.session['busy'])
+
     # events = flask.session['events']
     # for delkey in request.form:
     #   events[:] = [d for d in events if d.get('id') != delkey]
