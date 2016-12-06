@@ -43,6 +43,7 @@ def addMeetUp(descr,sdate,edate,stime,etime):
                "edate": edate,
                "stime": stime,
                "etime": etime,
+               "count": 0,
                "busytime": [] }
 
     collection = getDBCollection()
