@@ -81,7 +81,7 @@ def getCalendars():
     ## to pull it back here because the redirect has to be a
     ## 'return' 
     flask.session['meetupId'] = request.args.get('muId','')
-    if flask.session['meetupId'] = '':
+    if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
 
     app.logger.debug("Checking credentials for Google calendar access")
