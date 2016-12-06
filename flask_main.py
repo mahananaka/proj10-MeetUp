@@ -23,7 +23,7 @@ from apiclient import discovery
 
 # Our own modules
 from agenda import Appt, Agenda
-from meetupdb import addMeetUp, getAllMeetUps, deleteMeetUp
+from meetupdb import addMeetUp, getAllMeetUps, deleteMeetUp, getMeetUp
 
 ###
 # Globals
@@ -86,6 +86,12 @@ def getCalendars():
 
     if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
+
+    record = getMeetUp(flask.session['meetupId'])
+    flask.session['begin_date'] = record.sdate
+    flask.session['end_date'] = record.edate
+    flask.session['begin_time'] = record.stime
+    flask.session['end_time'] = record.etime
 
     app.logger.debug("Checking credentials for Google calendar access")
     credentials = valid_credentials()
