@@ -121,7 +121,9 @@ def displayEvents():
                       timeMin=flask.session['begin_date'],
                       timeMax=next_day(flask.session['end_date'])
                       ).execute()["items"]
+      print(response)
       events = events + format_events(response)
+
 
     sorted_events = sorted(events, key=lambda e: e["start"])
     flask.session['events'] = sorted_events
