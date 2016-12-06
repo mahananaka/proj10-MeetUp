@@ -156,8 +156,8 @@ def addBusyTimes():
 
     return flask.redirect(flask.url_for('displayFreetimes'))
 
-@app.route("/freetime")
-def displayFreetimes():
+@app.route("/freetime/<muID>")
+def displayFreetimes(muID):
     app.logger.debug("Entering displayFreetimes")
     if 'events' not in flask.session:
       app.logger.debug("Events not in session redirecting")
