@@ -74,14 +74,14 @@ def delete():
 
     return flask.redirect(flask.url_for("index"))
 
-@app.route("/getCalendars")
-def getCalendars():
+@app.route("/getCalendars/<muID>")
+def getCalendars(muID):
     ## We'll need authorization to list calendars 
     ## I wanted to put what follows into a function, but had
     ## to pull it back here because the redirect has to be a
     ## 'return' 
     
-    flask.session['meetupId'] = request.args.get('muId','')
+    flask.session['meetupId'] = muID
     if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
 
@@ -149,7 +149,6 @@ def addBusyTimes():
     flask.session['free'] = sessionify(schedule['free'])
     flask.session['busy'] = sessionify(schedule['busy'])
 
-    app.logger.debug(flask.session['busy'])
     updateBusyTimes(flask.session['meetupId'], flask.session['busy'])
     # for day in schedule['free']:
     #   for appt in day.appts:
