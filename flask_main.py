@@ -90,10 +90,10 @@ def getCalendars():
     #app.logger.debug(flask.session['meetupId'])
     record = getMeetUp(flask.session['meetupId'])
     app.logger.debug(record)
-    flask.session['begin_date'] = record.sdate
-    flask.session['end_date'] = record.edate
-    flask.session['begin_time'] = record.stime
-    flask.session['end_time'] = record.etime
+    flask.session['begin_date'] = record['sdate']
+    flask.session['end_date'] = record['edate']
+    flask.session['begin_time'] = record['stime']
+    flask.session['end_time'] = record['etime']
 
     app.logger.debug("Checking credentials for Google calendar access")
     credentials = valid_credentials()
