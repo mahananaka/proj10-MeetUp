@@ -82,7 +82,7 @@
       <tr>
         <td><label><input type="checkbox" name="{{ meetup.meetupid }}"></label></td>
         <td>{{ meetup.descr }}</td>
-        <td><a href='/calendar?muId={{ meetup.meetupid }}'>View</a></td>
+        <td><a href='/getCalendars?muId={{ meetup.meetupid }}'>View</a></td>
       </tr>
       {% endfor %}
     </tbody>
