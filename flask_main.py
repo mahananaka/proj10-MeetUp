@@ -80,8 +80,11 @@ def getCalendars():
     ## I wanted to put what follows into a function, but had
     ## to pull it back here because the redirect has to be a
     ## 'return' 
-    flask.session['meetupId'] = request.args.get('muId','')
-    if flask.session['meetupId'] == '':
+    
+    if meetupId not in flask.session:
+      flask.session['meetupId'] = request.args.get('muId','')
+
+    if flask.session['meetupId'] = '':
       return flask.redirect(flask.url_for("index"))
 
     app.logger.debug("Checking credentials for Google calendar access")
@@ -571,7 +574,7 @@ def oauth2callback():
     ## but for the moment I'll just log it and go back to
     ## the main screen
     app.logger.debug("Got credentials")
-    return flask.redirect(flask.url_for('choose'))
+    return flask.redirect(flask.url_for('getCalendars'))
 
 
 #################
