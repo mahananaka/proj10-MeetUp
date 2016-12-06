@@ -403,7 +403,6 @@ def format_events(events):
     result = [ ]
     for e in events:
         if("date" in e["start"]):
-          print("{} , {}".format(e["start"]["date"],e["end"]["date"]))
           start = interpret_date(e["start"]["date"],"YYYY-MM-DD")
           end = interpret_date(e["end"]["date"],"YYYY-MM-DD")
         else:
@@ -411,15 +410,12 @@ def format_events(events):
           start = e["start"]["dateTime"]
           end = e["end"]["dateTime"]
 
-
-
         if("transparency" in e):
           show = False
         else:
           show = True
 
-
-        if(show and in_time_frame(start,end,flask.session['begin_time'],flask.session['end_time'])):
+        if(in_time_frame(start,end,flask.session['begin_time'],flask.session['end_time'])):
           result.append(
             { "kind": e["kind"],
               "id": e["id"],
