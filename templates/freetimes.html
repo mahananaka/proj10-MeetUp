@@ -65,16 +65,27 @@
     <div class="col-md-5">
     {% set columnLength = (session.free|length/2)|round(0,'ceil') %}
     {% for freetimes in session.free %}
+        {% set busytimes = session.busy[loop.index0] %}
         <div class="row">
           <div class="col-md-12">
-            <h3 style="display: flex;justify-content: center;"><strong><u>{{ freetimes[0].start|fmtdate }}</u></strong></h3>
+            <h3 style="display: flex;justify-content: center;">
+              <strong>
+                <u>
+                  {% if freetimes|length > 0 %}
+                  {{ freetimes[0].start|fmtdate }}
+                  {% else %}
+                  {{ busytimes.start|fmtdate }}
+                  {% %}
+                </u>
+              </strong>
+            </h3>
           </div>
         </div>
         <div class="row">
           <div class="col-md-6">
             <ul class="list-unstyled">
             <li><strong>Free Times</strong></li>
-            {% set busytimes = session.busy[loop.index0] %}
+            
             {% for item in freetimes %}
               <li>
                 <label>
