@@ -487,7 +487,7 @@ def get_free_times(busytimes, dStart, dEnd, tStart, tEnd):
     time_end = combine_date_time(begin, arrow.get(tEnd))
     i = 0
 
-    for day in busytimes
+    for day in busytimes:
       busytimes_today = Agenda()
 
       for item in day:
