@@ -329,7 +329,7 @@ def interpret_date( text, fmt="MM/DD/YYYY" ):
         raise
     return as_arrow.isoformat()
 
-def end_of_day( txt, fmt="MM/DD/YYYY"):
+def end_of_day( text, fmt="MM/DD/YYYY"):
     """
     Convert text of date to ISO format used internally,
     with time set to end of day and the local time zone.
