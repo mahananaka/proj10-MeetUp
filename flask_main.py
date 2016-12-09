@@ -54,149 +54,112 @@ APPLICATION_NAME = 'MeetMe class project'
 @app.route("/")
 @app.route("/index")
 def index():
-  app.logger.debug("Entering index")
-  if 'begin_date' not in flask.session:
-    init_session_values()
-  flask.g.meetups = getAllMeetUps()
-  return render_template('index.html')
+    app.logger.debug("Entering index")
+    if 'begin_date' not in flask.session:
+        init_session_values()
+
+    #We can use global since MeetUps are not user specific
+    #No personal data is avialable either, so no security concerns
+    flask.g.meetups = getAllMeetUps()
+    return render_template('index.html')
 
 @app.route("/make")
 def make():
     app.logger.debug("Entering make")
     return render_template('make.html')
 
-@app.route("/delete", methods=['POST'])
-def delete():
-    app.logger.debug("Entering delete")
-
-    for delete in request.form: #delete each selected, delete variable holds id of db entry
-      deleteMeetUp(delete)
-
-    return flask.redirect(flask.url_for("index"))
-
 @app.route("/getCalendars/<muID>")
 def getCalendars(muID):
-    ## We'll need authorization to list calendars 
-    ## I wanted to put what follows into a function, but had
-    ## to pull it back here because the redirect has to be a
-    ## 'return' 
-    
+    #Make sure muID points to a real MeetUp in the database    
     record = getMeetUp(muID)
     if record == None:
         flask.session['meetupId'] = ''
         flask.flash("No MeetUp found for ID: {}".format(muID))
         return flask.redirect(flask.url_for('index'))
 
+    #Save muID and info about this meetup to session variables
     flask.session['meetupId'] = muID
-    if flask.session['meetupId'] == '':
-      return flask.redirect(flask.url_for("index"))
-
     flask.session['begin_date'] = record['sdate']
     flask.session['end_date'] = record['edate']
     flask.session['begin_time'] = record['stime']
     flask.session['end_time'] = record['etime']
 
+    #Check valid credentials with Google Calendar
     app.logger.debug("Checking credentials for Google calendar access")
     credentials = valid_credentials()
     if not credentials:
       app.logger.debug("Redirecting to authorization")
       return flask.redirect(flask.url_for('oauth2callback'))
 
+    #Get data from Google Calendar and process it
     gcal_service = get_gcal_service(credentials)
     app.logger.debug("Returned from get_gcal_service")
     flask.session['calendars'] = list_calendars(gcal_service)
-
-    print(flask.session['calendars'])
 
     return render_template('calendars.html')
 
 @app.route("/display", methods=['POST'])
 def displayEvents():
+    #Check valid credentials with Google Calendar
     app.logger.debug("Entering displayEvents")
     credentials = valid_credentials()
     if not credentials:
-      app.logger.debug("Redirecting to authorization")
-      return flask.redirect(flask.url_for('oauth2callback'))
+        app.logger.debug("Redirecting to authorization")
+        return flask.redirect(flask.url_for('oauth2callback'))
 
+    #Get Events for each selected calendar and process them
     gcal_service = get_gcal_service(credentials)
-
     events = []
+
     for selected in request.form:
-      response = gcal_service.events().list(
-                      calendarId=selected,
-                      timeMin=flask.session['begin_date'],
-                      timeMax=next_day(flask.session['end_date'])
-                      ).execute()["items"]
-      print(response)
-      events = events + format_events(response)
+        response = gcal_service.events().list(
+                        calendarId=selected,
+                        timeMin=flask.session['begin_date'],
+                        timeMax=next_day(flask.session['end_date'])
+                        ).execute()["items"]
+        events = events + format_events(response)
 
-
+    #sort prcoessed events and save them to session
     sorted_events = sorted(events, key=lambda e: e["start"])
     flask.session['events'] = sorted_events
 
     return render_template('busytimes.html')
 
-@app.route("/addBusyTime", methods=['POST'])
-def addBusyTimes():
-    app.logger.debug("Entering addBusyTimes")
-    
-    if 'events' not in flask.session:
-        app.logger.debug("Events not in session redirecting")
-        return redirect(url_for('index'))
-
-    if flask.session['meetupId'] == "":
-        flask.flash("Cookie not found, are cookies enabled?")
-        return flask.redirect(flask.url_for("index"))
-
-    record = getMeetUp(flask.session['meetupId'])
-    if record == None:
-        flask.flash("No MeetUp found for ID: {}".format(muID))
-        return flask.redirect(flask.url_for('index'))
-
-    #All checks passed, we can add new busy times
-    newTimes = flask.session['events']
-
-    #this loop deletes removes the delkey items from newTimes
-    #I found this nice simple code on Stack Overflow
-    #http://stackoverflow.com/questions/1207406/remove-items-from-a-list-while-iterating
-    for delkey in request.form:
-        newTimes[:] = [d for d in newTimes if d.get('id') != delkey]
-
-    #make a new list of the old busytimes and the new ones to be added
-    busytimes = mergeBusyTimes(newTimes, record['busytime'], flask.session['begin_date'], flask.session['end_date'])
-
-    #commit the busy times to the database
-    updateBusyTimes(flask.session['meetupId'], sessionify(busytimes))
-    
-    return flask.redirect(flask.url_for('displayFreetimes', muID=flask.session['meetupId']))
-
 @app.route("/freetime/<muID>")
 def displayFreetimes(muID):
     app.logger.debug("Entering displayFreetimes")
 
+    #Check that muID is avlid
     record = getMeetUp(muID)
     if record == None:
         flask.flash("No MeetUp found for ID: {}".format(muID))
         return flask.redirect(flask.url_for('index'))
 
+    #Set busytimes, generate free times
     busytimes = record['busytime']
     freetimes = get_free_times(busytimes, record['sdate'], record['edate'], record['stime'], record['etime'])
 
     flask.session['free'] = sessionify(freetimes)
-    flask.session['busy'] = busytimes
+    flask.session['busy'] = busytimes #busytimes comes from mongodb, this is already session compatible
 
     return render_template('freetimes.html')
 
 #####
 #
-#  Option setting:  Buttons or forms that add some
-#     information into session state.  Don't do the
-#     computation here; use of the information might
-#     depend on what other information we have.
-#   Setting an option sends us back to the main display
-#      page, where we may put the new information to use. 
-#
+#  These are routes that don't have their own page
+#  After finishing these redirect back to one of 
+#  the routes above.
 #####
+
+@app.route("/delete", methods=['POST'])
+def delete():
+    app.logger.debug("Entering delete")
+
+    #delete each selected
+    for delete in request.form: 
+      deleteMeetUp(delete)
+
+    return flask.redirect(flask.url_for("index"))
 
 @app.route('/makemeetup', methods=['POST'])
 def makemeetup():
@@ -216,6 +179,7 @@ def makemeetup():
     mu_etime = interpret_time(request.form.get('endtime'),"h:mma")
     mu_descr = request.form.get('descr')
 
+    #Insert new MeetUp into database
     addMeetUp(mu_descr,mu_sdate,mu_edate,mu_stime,mu_etime)
 
     app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
@@ -223,31 +187,39 @@ def makemeetup():
       flask.session['begin_date'], flask.session['end_date']))
     return flask.redirect(flask.url_for("index"))
 
-# @app.route('/setrange', methods=['POST'])
-# def setrange():
-#     """
-#     User chose a date range with the bootstrap daterange
-#     widget.
-#     """
-#     app.logger.debug("Entering setrange")  
-#     flask.flash("Updated date and time range")
+@app.route("/addBusyTime", methods=['POST'])
+def addBusyTimes():
+    app.logger.debug("Entering addBusyTimes")
+    
+    #Check a few things to make sure all needed info exists
+    if 'events' not in flask.session:
+        app.logger.debug("Events not in session redirecting")
+        return redirect(url_for('index'))
 
-#     daterange = request.form.get('daterange')
-#     daterange_parts = daterange.split()
+    if flask.session['meetupId'] == "":
+        flask.flash("Cookie not found, are cookies enabled?")
+        return flask.redirect(flask.url_for("index"))
 
-#     flask.session['daterange'] = daterange
-#     flask.session['begin_date'] = interpret_date(daterange_parts[0])
-#     flask.session['end_date'] = interpret_date(daterange_parts[2])
-#     flask.session['begin_time'] = interpret_time(request.form.get('starttime'),"h:mma")
-#     flask.session['end_time'] = interpret_time(request.form.get('endtime'),"h:mma")
+    record = getMeetUp(flask.session['meetupId'])
+    if record == None:
+        flask.flash("No MeetUp found for ID: {}".format(muID))
+        return flask.redirect(flask.url_for('index'))
 
-#     app.logger.debug("{},{}".format(request.form.get('starttime'),request.form.get('endtime')))
-#     app.logger.debug("{},{}".format(flask.session['begin_time'],flask.session['end_time']))
+    #All checks passed, we can add new busy times
+    newTimes = flask.session['events']
 
-#     app.logger.debug("Setrange parsed {} - {}  dates as {} - {}".format(
-#       daterange_parts[0], daterange_parts[1], 
-#       flask.session['begin_date'], flask.session['end_date']))
-#     return flask.redirect(flask.url_for("choose"))
+    #Removes the items in newTimes we don't need, code from Stack Overflow
+    #http://stackoverflow.com/questions/1207406/remove-items-from-a-list-while-iterating
+    for delkey in request.form:
+        newTimes[:] = [d for d in newTimes if d.get('id') != delkey]
+
+    #make a new list of the old busytimes and the new ones to be added
+    busytimes = mergeBusyTimes(newTimes, record['busytime'], flask.session['begin_date'], flask.session['end_date'])
+
+    #commit the busy times to the database
+    updateBusyTimes(flask.session['meetupId'], sessionify(busytimes))
+    
+    return flask.redirect(flask.url_for('displayFreetimes', muID=flask.session['meetupId']))
 
 ####
 #
@@ -272,6 +244,12 @@ def init_session_values():
     # Default time span each day, 8 to 5
     flask.session["begin_time"] = interpret_time("9am","ha")
     flask.session["end_time"] = interpret_time("5pm","ha")
+
+####
+#
+#  Functions (NOT pages) that return some information
+#
+####
 
 def interpret_time( text, time_format="h:mma"):
     """
@@ -328,12 +306,6 @@ def end_of_day( text, fmt="MM/DD/YYYY"):
         flask.flash("Date '{}' didn't fit expected format 12/31/2001")
         raise
     return as_arrow.isoformat()
-
-####
-#
-#  Functions (NOT pages) that return some information
-#
-####
 
 def combine_date_time(arw_date, arw_time):
     """
@@ -672,7 +644,7 @@ def oauth2callback():
 
 #################
 #
-# Functions used within the templates
+# Filters used within the Jinja templates
 #
 #################
 
