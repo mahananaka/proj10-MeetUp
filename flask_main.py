@@ -379,7 +379,6 @@ def format_events(events):
         else:
           show = True
 
-        print(e["summary"])
         if(in_time_frame(start,end,flask.session['begin_time'],flask.session['end_time'])):
           result.append(
             { "kind": e["kind"],
@@ -400,8 +399,6 @@ def in_time_frame(startTime, endTime, lowerbound, upperbound):
     dates in the range and we now filter down to the times that 
     matter.
     """
-    print("{}, {}, {}, {}".format(startTime,endTime,lowerbound,upperbound))
-
     arw_lowerbound = arrow.get(lowerbound).to('local').time()
     arw_upperbound = arrow.get(upperbound).to('local').time()
     start = arrow.get(startTime).to('local').time()
