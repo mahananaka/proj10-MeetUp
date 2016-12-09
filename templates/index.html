@@ -83,7 +83,7 @@
       <tr>
         <td><label><input type="checkbox" name="{{ meetup.meetupid }}"></label></td>
         <td>{{ meetup.descr }}</td>
-        <td><a href="{{ url_for('getCalendars',muID=meetup.meetupid) }}">Share this</a></td>
+        <td><a href="{{ url_for('getCalendars',muID=meetup.meetupid) }}">Share this link</a></td>
         <td><a href="{{ url_for('displayFreetimes',muID=meetup.meetupid) }}">View</a></td>
       </tr>
       {% endfor %}
