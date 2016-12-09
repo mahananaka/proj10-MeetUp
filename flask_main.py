@@ -170,6 +170,7 @@ def displayFreetimes(muID):
     record = getMeetUp(muID)
     print(record)
     if record == None:
+        flask.flash("No MeetUp found for ID: {}".format(muID))
         return flask.redirect(flask.url_for('index'))
 
     busytimes = record['busytime']
