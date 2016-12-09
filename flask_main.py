@@ -104,9 +104,9 @@ def getCalendars(muID):
 
     gcal_service = get_gcal_service(credentials)
     app.logger.debug("Returned from get_gcal_service")
-    flask.session["calendars"] = list_calendars(gcal_service)
+    flask.g.calendars = list_calendars(gcal_service)
 
-    print(flask.session["calendars"])
+    print(flask.g.calendars)
 
     return render_template('calendars.html')
 
@@ -372,13 +372,14 @@ def list_calendars(service):
     for cal in calendar_list:
         id = cal["id"]
         summary = cal["summary"]
-        # Optional binary attributes with False as default
         selected = ("selected" in cal) and cal["selected"]
-
+        primary = ("primary" in cal) and cal["primary"]
+        
         result.append(
           { "id": id,
             "summary": summary,
             "selected": selected,
+            "primary": primary
             })
     return sorted(result, key=cal_sort_key)
 
