@@ -56,7 +56,7 @@ def getMeetUp(meetupID):
     records = collection.find(key)
 
     if records.count() > 0:
-      return records[0] #just the first result
+      return records[0] #just the first result, should only be one.
     else:
       return None
 
@@ -77,3 +77,4 @@ def updateBusyTimes(meetupID, busytimes):
     collection = getDBCollection()
     collection.update(key, { '$set': value })
     collection.update(key, { '$inc':{ "count":1 }})
+    return
