@@ -370,24 +370,15 @@ def list_calendars(service):
     calendar_list = service.calendarList().list().execute()["items"]
     result = [ ]
     for cal in calendar_list:
-        kind = cal["kind"]
         id = cal["id"]
-        if "description" in cal: 
-            desc = cal["description"]
-        else:
-            desc = "(no description)"
         summary = cal["summary"]
         # Optional binary attributes with False as default
         selected = ("selected" in cal) and cal["selected"]
-        primary = ("primary" in cal) and cal["primary"]
-        
 
         result.append(
-          { "kind": kind,
-            "id": id,
+          { "id": id,
             "summary": summary,
             "selected": selected,
-            "primary": primary
             })
     return sorted(result, key=cal_sort_key)
 
