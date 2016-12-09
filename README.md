@@ -20,7 +20,7 @@ as long as you have bash and make on your server machine. All but step four is d
 2. cd < install directory >
 3. bash ./configure
 4. You will need to create a folder called secrets. Inside of secrets folder you will need three files
-  * admin_secrets.py: The quotes must be included, the username, password, port, and hostname are for the database you are using.
+  * admin_secrets.py: The quotes must be included, the uname, pwd, port, and hostname are for the database you are using.
     * `google_key_file=“secrets/google_client_key.json”`
     * `admin_user="uname"`
     * `admin_pw="pass"`
