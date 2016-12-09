@@ -91,7 +91,6 @@ def getCalendars(muID):
     if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
 
-    app.logger.debug(record)
     flask.session['begin_date'] = record['sdate']
     flask.session['end_date'] = record['edate']
     flask.session['begin_time'] = record['stime']
@@ -105,7 +104,8 @@ def getCalendars(muID):
 
     gcal_service = get_gcal_service(credentials)
     app.logger.debug("Returned from get_gcal_service")
-    flask.g.calendars = list_calendars(gcal_service)
+    flask.session["calendars"] = list_calendars(gcal_service)
+
     return render_template('calendars.html')
 
 @app.route("/display", methods=['POST'])
@@ -137,22 +137,33 @@ def displayEvents():
 @app.route("/addBusyTime", methods=['POST'])
 def addBusyTimes():
     app.logger.debug("Entering addBusyTimes")
+    
     if 'events' not in flask.session:
-      app.logger.debug("Events not in session redirecting")
-      return redirect(url_for('index'))
+        app.logger.debug("Events not in session redirecting")
+        return redirect(url_for('index'))
 
-    if flask.session['meetupId'] == '':
+    if flask.session['meetupId'] == "":
         flask.flash("Cookie not found, are cookies enabled?")
         return flask.redirect(flask.url_for("index"))
 
+    record = getMeetUp(flask.session['meetupId'])
+    if record == None:
+        flask.flash("No MeetUp found for ID: {}".format(muID))
+        return flask.redirect(flask.url_for('index'))
+
+    #All checks passed, we can add new busy times
     newTimes = flask.session['events']
 
+    #this loop deletes removes the delkey items from newTimes
+    #I found this nice simple code on Stack Overflow
+    #http://stackoverflow.com/questions/1207406/remove-items-from-a-list-while-iterating
     for delkey in request.form:
-      newTimes[:] = [d for d in newTimes if d.get('id') != delkey]
+        newTimes[:] = [d for d in newTimes if d.get('id') != delkey]
 
-    record = getMeetUp(flask.session['meetupId'])
+    #make a new list of the old busytimes and the new ones to be added
     busytimes = mergeBusyTimes(newTimes, record['busytime'], flask.session['begin_date'], flask.session['end_date'])
 
+    #commit the busy times to the database
     updateBusyTimes(flask.session['meetupId'], sessionify(busytimes))
     
     return flask.redirect(flask.url_for('displayFreetimes', muID=flask.session['meetupId']))
@@ -160,12 +171,8 @@ def addBusyTimes():
 @app.route("/freetime/<muID>")
 def displayFreetimes(muID):
     app.logger.debug("Entering displayFreetimes")
-    # if 'events' not in flask.session:
-    #   app.logger.debug("Events not in session redirecting")
-    #   return redirect(url_for('index'))
 
     record = getMeetUp(muID)
-    print(record)
     if record == None:
         flask.flash("No MeetUp found for ID: {}".format(muID))
         return flask.redirect(flask.url_for('index'))
@@ -175,28 +182,6 @@ def displayFreetimes(muID):
 
     flask.session['free'] = sessionify(freetimes)
     flask.session['busy'] = busytimes
-
-    print(flask.session['free'])
-    print(flask.session['busy'])
-
-    # events = flask.session['events']
-    # for delkey in request.form:
-    #   events[:] = [d for d in events if d.get('id') != delkey]
-    
-    # schedule = get_busy_free_times(flask.session['events'],
-    #                                 flask.session['begin_date'],
-    #                                 flask.session['end_date'], 
-    #                                 flask.session['begin_time'],
-    #                                 flask.session['end_time'])
-
-    # #store in session, must be processed so it can go into session
-    # flask.session['free'] = sessionify(schedule['free'])
-    # flask.session['busy'] = sessionify(schedule['busy'])
-
-
-    # for day in schedule['free']:
-    #   for appt in day.appts:
-    #     print("{} to {}\n".format(appt.start_isoformat(),appt.end_isoformat()))
 
     return render_template('freetimes.html')
 
