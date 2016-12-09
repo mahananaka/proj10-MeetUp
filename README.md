@@ -6,9 +6,9 @@ Jared Paeschke, contact me via paeschk@cs.uoregon.edu
 
 ## What is here
 
-This is the final MeetUp project for CIS322. This flask app allows the user to find
-common free times that multiple people have in which they may setup a group meeting
-to complete tasks.
+This is the final MeetUp project for CIS322. This flask app allows the user to find 
+free times that multiple people have in common. These free times assist to find a good
+time for the group to set a meeting.
 
 ## How to Install
 
