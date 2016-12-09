@@ -139,6 +139,7 @@ def displayFreetimes(muID):
     busytimes = record['busytime']
     freetimes = get_free_times(busytimes, record['sdate'], record['edate'], record['stime'], record['etime'])
 
+    flask.session["commits"] = record["count"]
     flask.session['free'] = sessionify(freetimes)
     flask.session['busy'] = busytimes #busytimes comes from mongodb, this is already session compatible
 
