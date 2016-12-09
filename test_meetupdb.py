@@ -65,7 +65,7 @@ def test_updateBusyTimes():
                  [{"descr":"test3","start":"2017-01-01T10:00:00-8:00","end":"2017-01-01T12:00:00-8:00"},
                   {"descr":"test4","start":"2017-01-01T10:00:00-8:00","end":"2017-01-01T12:00:00-8:00"}]]
 
-    updateBusyTimes(meetupID, busytimes)
+    updateBusyTimes(meetupid, busytimes)
 
     record = getMeetUp(meetupid)
     assert record != None
@@ -77,7 +77,7 @@ def test_deleteMeetUp():
     Using the meetupid from test_addMeetUp() try and retrieve that db record.
     """
 
-    deleteMeetUp(meetupID)
+    deleteMeetUp(meetupid)
     record = getMeetUp(meetupid)
-    
+
     assert record == None
