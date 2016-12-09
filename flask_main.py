@@ -104,9 +104,9 @@ def getCalendars(muID):
 
     gcal_service = get_gcal_service(credentials)
     app.logger.debug("Returned from get_gcal_service")
-    flask.g.calendars = list_calendars(gcal_service)
+    flask.session['calendars'] = list_calendars(gcal_service)
 
-    print(flask.g.calendars)
+    print(flask.session['calendars'])
 
     return render_template('calendars.html')
 

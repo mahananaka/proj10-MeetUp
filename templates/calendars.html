@@ -65,7 +65,7 @@
 {% if g.calendars is defined  %}
 <form action="{{ url_for('displayEvents') }}" onsubmit="return Validate();" method="post">
   <div class="row">
-  {% for cal in g.calendars if cal.selected %}
+  {% for cal in session.calendars if cal.selected %}
       <div class="col-md-4">
           <label><input type="checkbox" name="{{ cal.id }}"> {{ cal.summary }}</label>
       </div>
