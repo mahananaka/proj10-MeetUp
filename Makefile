@@ -34,6 +34,7 @@ DERIVED = static/js/*.min.js static/js/node_modules
 env:
 	$(PYVENV)  env
 	($(INVENV) pip install -r requirements.txt )
+	($(INVENV) python3 meetupdb.py)
 
 # Many recipes need to be run in the virtual environment, 
 # so run them as $(INVENV) command

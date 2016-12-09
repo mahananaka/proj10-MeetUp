@@ -23,6 +23,23 @@ MONGO_CLIENT_URL = "mongodb://{}:{}@{}:{}/{}".format(
     secrets.admin_secrets.port,
     secrets.client_secrets.db)
 
+MONGO_ADMIN_URL = "mongodb://{}:{}@{}:{}/admin".format(
+    secrets.admin_secrets.admin_user,
+    secrets.admin_secrets.admin_pw,
+    secrets.admin_secrets.host, 
+    secrets.admin_secrets.port)
+
+def makeDBUser():
+    try: 
+        dbclient = MongoClient(MONGO_ADMIN_URL)
+        db = getattr(dbclient, secrets.client_secrets.db)
+        db.add_user(secrets.client_secrets.db_user, password=secrets.client_secrets.db_user_pw)
+        print("Created user {}".format(secrets.client_secrets.db_user))
+    except Exception as err:
+        print("Failed:")
+        print(err)
+
+
 def getDBCollection():
     try:
         dbclient = MongoClient(MONGO_CLIENT_URL)
@@ -30,8 +47,8 @@ def getDBCollection():
         collection = db.meeting
         return collection
     except Exception as err:
-        print("err")
-        sys.exit(1)
+        print("Failed to connect to db.")
+        return none
 
     return None
 
@@ -78,3 +95,6 @@ def updateBusyTimes(meetupID, busytimes):
     collection.update(key, { '$set': value })
     collection.update(key, { '$inc':{ "count":1 }})
     return
+
+if __name__ == "__main__":
+    makeDBUser()
