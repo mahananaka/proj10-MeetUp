@@ -81,6 +81,11 @@ def getCalendars(muID):
     ## to pull it back here because the redirect has to be a
     ## 'return' 
     
+    record = getMeetUp(muID)
+    if record == None:
+        flask.flash("No MeetUp found for ID:  {}".format(muID))
+        return flask.redirect(flask.url_for('index'))
+
     flask.session['meetupId'] = muID
     if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
