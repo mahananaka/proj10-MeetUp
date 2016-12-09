@@ -1,5 +1,5 @@
 """
-Nose tests for flask_main.py
+Nose tests for agenda.py
 """
 # Date handling 
 import arrow # Replacement for datetime, based on moment.js

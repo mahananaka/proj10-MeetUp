@@ -1,5 +1,5 @@
 """
-Nose tests for flask_main.py
+Nose tests for meetupdb.py
 """
 # Date handling 
 import arrow # Replacement for datetime, based on moment.js
@@ -8,11 +8,6 @@ from dateutil import tz  # For interpreting local times
 
 # modules we are testing
 from meetupdb import *
-
-"""
-The testing done here is focused on my modifications to agenda.py since
-the baseline code is heavily tested within the file by the original author.
-"""
 
 def test_getDBCollection():
     """
@@ -46,20 +41,19 @@ def test_addMeetUp():
 def test_getMeetUp():
     """
     Using the meetupid from test_addMeetUp() try and retrieve that db record.
-    """
-    
-    #getMeetUp returns None when nothing is found
+    """    
     global record 
     record = getMeetUp(meetupid)
+
+    #getMeetUp returns None when nothing is found
     assert record != None
     assert record["count"] == 0
 
 
 def test_updateBusyTimes():
     """
-    Using the meetupid from test_addMeetUp() try and retrieve that db record.
-    """
-    
+    Using the meetupid from test_addMeetUp() to update the busytime key within the record.
+    """    
     busytimes = [[{"descr":"test1","start":"2017-01-01T10:00:00-8:00","end":"2017-01-01T12:00:00-8:00"},
                   {"descr":"test2","start":"2017-01-01T15:00:00-8:00","end":"2017-01-01T14:00:00-8:00"}],
                  [{"descr":"test3","start":"2017-01-01T10:00:00-8:00","end":"2017-01-01T12:00:00-8:00"},
@@ -74,7 +68,7 @@ def test_updateBusyTimes():
 
 def test_deleteMeetUp():
     """
-    Using the meetupid from test_addMeetUp() try and retrieve that db record.
+    Using the meetupid from test_addMeetUp() try and delete that record
     """
 
     deleteMeetUp(meetupid)
