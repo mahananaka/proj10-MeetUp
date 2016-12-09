@@ -167,7 +167,7 @@ def displayFreetimes(muID):
     #   app.logger.debug("Events not in session redirecting")
     #   return redirect(url_for('index'))
 
-    record = getMeetUp(flask.session['meetupId'])
+    record = getMeetUp(muID)
     busytimes = record['busytime']
     freetimes = get_free_times(busytimes, record['sdate'], record['edate'], record['stime'], record['etime'])
 
