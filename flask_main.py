@@ -168,6 +168,7 @@ def displayFreetimes(muID):
     #   return redirect(url_for('index'))
 
     record = getMeetUp(muID)
+    print(record)
     if record == None:
         flask.redirect(flask.url_for('index'))
 
