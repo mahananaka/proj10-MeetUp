@@ -83,15 +83,14 @@ def getCalendars(muID):
     
     record = getMeetUp(muID)
     if record == None:
-        flask.flash("No MeetUp found for ID:  {}".format(muID))
+        flask.session['meetupId'] = ''
+        flask.flash("No MeetUp found for ID: {}".format(muID))
         return flask.redirect(flask.url_for('index'))
 
     flask.session['meetupId'] = muID
     if flask.session['meetupId'] == '':
       return flask.redirect(flask.url_for("index"))
 
-    #app.logger.debug(flask.session['meetupId'])
-    record = getMeetUp(flask.session['meetupId'])
     app.logger.debug(record)
     flask.session['begin_date'] = record['sdate']
     flask.session['end_date'] = record['edate']
@@ -142,6 +141,10 @@ def addBusyTimes():
       app.logger.debug("Events not in session redirecting")
       return redirect(url_for('index'))
 
+    if flask.session['meetupId'] == '':
+        flask.flash("Cookie not found, are cookies enabled?")
+        return flask.redirect(flask.url_for("index"))
+
     newTimes = flask.session['events']
 
     for delkey in request.form:
@@ -149,17 +152,6 @@ def addBusyTimes():
 
     record = getMeetUp(flask.session['meetupId'])
     busytimes = mergeBusyTimes(newTimes, record['busytime'], flask.session['begin_date'], flask.session['end_date'])
-
-
-    # schedule = get_busy_free_times(flask.session['events'],
-    #                                  flask.session['begin_date'],
-    #                                  flask.session['end_date'], 
-    #                                  flask.session['begin_time'],
-    #                                  flask.session['end_time'])
-
-    # #store in session, must be processed so it can go into session
-    # flask.session['free'] = sessionify(schedule['free'])
-    # flask.session['busy'] = sessionify(schedule['busy'])
 
     updateBusyTimes(flask.session['meetupId'], sessionify(busytimes))
     
